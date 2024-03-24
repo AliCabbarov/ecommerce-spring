@@ -24,5 +24,4 @@ public class Product {
     private List<Category> categories;
     @OneToMany(mappedBy = "product",fetch = FetchType.EAGER)
     private List<ProductAttribute> productAttributes;
-
 }

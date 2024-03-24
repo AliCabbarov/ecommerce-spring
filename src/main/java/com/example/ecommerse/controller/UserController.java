@@ -13,8 +13,8 @@ import java.net.http.HttpRequest;
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
-    @DeleteMapping
-    public ResponseEntity<Void> delete(){
-        return userService.delete();
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable(required = false) Long id){
+        return userService.delete(id);
     }
 }

@@ -34,7 +34,7 @@ public class OrderServiceImpl implements OrderService {
         Cart cart = cartRepository.findByUser(user).orElseThrow();
 
         CartItem cartItem = hasCartItem(product, cart);
-        updateCartItem(cartItem,product,cart);
+        updateCartItem(cartItem, product, cart);
 
         cart.setTotalPrice(cart.getTotalPrice() == null ?
                 cartItem.getTotalPrice() : cart.getTotalPrice().add(product.getPrice()));
@@ -54,9 +54,9 @@ public class OrderServiceImpl implements OrderService {
         Cart cart = cartRepository.findByUser(user).orElseThrow();
         CartItem cartItem = hasCartItem(product, cart);
 
-        updateCartItem(cartItem,product,cart);
+        updateCartItem(cartItem, product, cart);
 
-       cart.setTotalPrice(cart.getTotalPrice().add(product.getPrice()));
+        cart.setTotalPrice(cart.getTotalPrice().add(product.getPrice()));
 
         cartItemRepository.save(cartItem);
         cartRepository.save(cart);
@@ -71,31 +71,32 @@ public class OrderServiceImpl implements OrderService {
         Customer customer = customerRepository.findByUser(user).orElseThrow();
         Cart cart = cartRepository.findByUser(user).orElseThrow();
 
-        List<CartItem> cartItems =  cartItemRepository.findAllByCartAndStatus(cart,true);
+        List<CartItem> cartItems = cartItemRepository.findAllByCartAndStatus(cart, true);
 
         cartItems
                 .forEach(cartItem -> cartItem.setStatus(false));
         cart.setTotalPrice(null);
+
         OrderStatus orderStatus = orderStatusRepository
                 .findByOrderType(OrderType.ON_THE_WAY).orElseThrow();
 
         Order order = Order.builder()
                 .orderStatus(orderStatus)
                 .customer(customer)
-                .cart(cart)
+                .cartItems(cartItems)
                 .build();
 
         orderRepository.save(order);
 
     }
 
-    private CartItem hasCartItem(Product product, Cart cart){
+    private CartItem hasCartItem(Product product, Cart cart) {
         Optional<CartItem> cartItem = cartItemRepository.findByProductAndCartAndStatus(product, cart, true);
 
         return cartItem.orElseGet(() -> CartItem.builder().build());
     }
 
-    private void updateCartItem(CartItem cartItem,Product product,Cart cart){
+    private void updateCartItem(CartItem cartItem, Product product, Cart cart) {
         cartItem.setCart(cart);
         cartItem.setTotalPrice(cartItem.getTotalPrice() == null ?
                 product.getPrice() : cartItem.getTotalPrice().add(product.getPrice()));

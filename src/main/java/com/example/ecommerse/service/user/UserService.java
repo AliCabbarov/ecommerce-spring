@@ -4,7 +4,7 @@ import org.springframework.http.ResponseEntity;
 
 public interface UserService {
 
-    ResponseEntity<Void> delete();
+    ResponseEntity<Void> delete(long id);
 
     void deleteById(Long id);
 }

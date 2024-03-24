@@ -18,4 +18,5 @@ public class Cart {
     private BigDecimal totalPrice;
     @OneToOne
     private User user;
+
 }

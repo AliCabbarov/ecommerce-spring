@@ -2,6 +2,8 @@ package com.example.ecommerse.model.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 @Getter
 @Entity(name = "orders")
 @NoArgsConstructor
@@ -15,6 +17,6 @@ public class Order {
     private OrderStatus orderStatus;
     @ManyToOne
     private Customer customer;
-    @ManyToOne
-    private Cart cart;
+    @OneToMany
+    private List<CartItem> cartItems;
 }

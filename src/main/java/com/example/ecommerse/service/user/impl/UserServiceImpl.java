@@ -1,7 +1,7 @@
 package com.example.ecommerse.service.user.impl;
 
 import com.example.ecommerse.model.entity.User;
-import com.example.ecommerse.model.enums.messages.Exceptions;
+import com.example.ecommerse.model.enums.type.RoleType;
 import com.example.ecommerse.model.exception.NotFoundException;
 import com.example.ecommerse.model.exception.response.ExceptionResponse;
 import com.example.ecommerse.repository.UserRepository;
@@ -23,18 +23,22 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public ResponseEntity<Void> delete() {
+    public ResponseEntity<Void> delete(long id) {
         User user = authenticationService.getAuthenticatedUser();
-        user.setEnabled(false);
-
-         return ResponseEntity.ok().build();
+        User deletedUser = userRepository.findById(id).orElseThrow(() -> new NotFoundException(new ExceptionResponse(HttpStatus.valueOf(NOT_FOUND.getCode()), NOT_FOUND.getMessage()), id));
+        if (user.getRole().getName().equals(RoleType.ROLE_ADMIN)) {
+            deletedUser.setEnabled(false);
+            return ResponseEntity.ok().build();
+        }
+            user.setEnabled(false);
+        return ResponseEntity.ok().build();
     }
 
     @Override
     @Transactional
     public void deleteById(Long id) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException(new ExceptionResponse(HttpStatus.valueOf(NOT_FOUND.getCode()),NOT_FOUND.getMessage()), id));
+                .orElseThrow(() -> new NotFoundException(new ExceptionResponse(HttpStatus.valueOf(NOT_FOUND.getCode()), NOT_FOUND.getMessage()), id));
         user.setEnabled(false);
     }
 
